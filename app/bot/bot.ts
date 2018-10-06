@@ -71,6 +71,37 @@ export class Bot {
         return;
     }
 
+    private isFullCapacity(): boolean { //Checking if the capacity is full
+        return this.playerInfo.CarriedResources > (this.playerInfo.CarryingCapacity * 0.9);
+    }
+
+    private returnHome(currentLocation: Point): Point {
+        const houseCoords: Point = this.playerInfo.HouseLocation;
+        const userX: Number = currentLocation.x;
+        const userY: Number = currentLocation.y;
+        const houseX: Number = houseCoords.x;
+        const houseY: Number = houseCoords.y;
+        var finalReturn: Point;
+
+        if (userX < houseX) {
+            return finalReturn = new Point(1, 0);
+        }
+        else if (userX > houseX) {
+            return finalReturn = new Point(-1, 0);
+        }
+
+        if (userY < houseY) {
+            return finalReturn = new Point(0, 1);
+        }
+        else if (userY < userY) {
+            return finalReturn = new Point(0, -1);
+        }
+
+        return finalReturn = new Point(0, 0);
+
+    }
+
+
     /**
      * Gets called after executeTurn
      * @returns void
