@@ -22,6 +22,10 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: Map, visiblePlayers: Player[]): string {
+        if (this.isFullCapacity()) {
+            return this.returnHome(map);
+        }
+
         const resource = this.nextToResource(this.playerInfo.Position, map);
         if (resource) {
             return AIHelper.createCollectAction(resource);
@@ -75,30 +79,20 @@ export class Bot {
         return this.playerInfo.CarriedResources > (this.playerInfo.CarryingCapacity * 0.9);
     }
 
-    private returnHome(currentLocation: Point): Point {
-        const houseCoords: Point = this.playerInfo.HouseLocation;
-        const userX: Number = currentLocation.x;
-        const userY: Number = currentLocation.y;
-        const houseX: Number = houseCoords.x;
-        const houseY: Number = houseCoords.y;
-        var finalReturn: Point;
+    private returnHome(map: Map): string {
+        let move: Point;
 
-        if (userX < houseX) {
-            return finalReturn = new Point(1, 0);
-        }
-        else if (userX > houseX) {
-            return finalReturn = new Point(-1, 0);
+        if (this.playerInfo.HouseLocation.x !== this.playerInfo.Position.x) {
+            move = new Point((this.playerInfo.HouseLocation.x < this.playerInfo.Position.x) ? -1 : 1, 0);
+        } else if (this.playerInfo.HouseLocation.y !== this.playerInfo.Position.y) {
+            move = new Point(0, (this.playerInfo.HouseLocation.y < this.playerInfo.Position.y) ? -1 : 1);
         }
 
-        if (userY < houseY) {
-            return finalReturn = new Point(0, 1);
-        }
-        else if (userY < userY) {
-            return finalReturn = new Point(0, -1);
+        if (map.getTileAt(this.addVectors(this.playerInfo.Position, move)) === TileContent.Wall) {
+            return AIHelper.createAttackAction(move);
         }
 
-        return finalReturn = new Point(0, 0);
-
+        return AIHelper.createMoveAction(move);
     }
 
 
