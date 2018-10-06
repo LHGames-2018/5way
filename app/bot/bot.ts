@@ -22,6 +22,10 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: Map, visiblePlayers: Player[]): string {
+        if (this.playerInfo.HouseLocation.x !== this.playerInfo.Position.x) {
+            return AIHelper.createMoveAction(new Point(1, 0));
+        }
+
         if (this.isFullCapacity()) {
             return this.returnHome(map);
         }
