@@ -22,7 +22,7 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: Map, visiblePlayers: Player[]): string {
-        const resource = this.nextToResource(map);
+        const resource = this.nextToResource(this.playerInfo.Position, map);
         if (resource) {
             return AIHelper.createCollectAction(resource);
         }
@@ -31,8 +31,13 @@ export class Bot {
         return AIHelper.createMoveAction(randomIntFromInterval());
     }
 
-    private nextToResource(map: Map): Point | undefined {
-        const attempts = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
+    private nextToResource(position: Point, map: Map): Point | undefined {
+        const attempts = [
+            new Point(position.x - 1, 0),
+            new Point(position.x + 1, 0),
+            new Point(0, position.y - 1),
+            new Point(0, position.y + 1),
+        ];
 
         attempts.forEach((attempt) => {
             if (map.getTileAt(attempt) === TileContent.Resource) {
