@@ -30,6 +30,7 @@ export class Bot {
         if (upgradePlayer) {
             return upgradePlayer;
         }
+
         if (this.isFullCapacity()) {
             return this.returnHome(map);
         }
@@ -39,13 +40,12 @@ export class Bot {
         }
 
         const executeNearestResource = this.thinkNearestResource(map);
-
         if (executeNearestResource) {
             return executeNearestResource;
         }
 
         // Determine what action you want to take.
-        return AIHelper.createMoveAction(randomIntFromInterval());
+        return this.buildMoveAction(randomIntFromInterval(), map);
     }
 
     private thinkNearestResource(map: Map): string | undefined {
@@ -59,7 +59,7 @@ export class Bot {
             return AIHelper.createAttackAction(move);
         }
 
-        return AIHelper.createMoveAction(move);
+        return this.buildMoveAction(move, map);
     }
 
     private selectBestDirection(start: Point, end: Point): Point {
@@ -115,12 +115,12 @@ export class Bot {
             return AIHelper.createAttackAction(move);
         }
 
-        return AIHelper.createMoveAction(move);
+        return this.buildMoveAction(move, map);
     }
 
     private obstacleChecker(nextMoveCoord: Point, map: Map): boolean { //Returns true if there is no obstacle at next move
         const nextMoveContent: TileContent = map.getTileAt(nextMoveCoord);
-        if (nextMoveContent == TileContent.Resource || nextMoveContent == TileContent.House || nextMoveContent == TileContent.Shop || nextMoveContent == TileContent.Lava) {
+        if (nextMoveContent === TileContent.Resource || nextMoveContent === TileContent.House || nextMoveContent === TileContent.Shop || nextMoveContent === TileContent.Lava) {
             return false;
         }
         return true;
@@ -133,55 +133,40 @@ export class Bot {
         const potentialNextCoordDown: Point = new Point (currentCoord.x, currentCoord.y + 1);
         const potentialNextCoordUp: Point = new Point (currentCoord.x, currentCoord.y - 1);
 
-        if (direction.x == 0 && direction.y == -1 && this.obstacleChecker(nextMoveCoord, map) == false) { //Tries to go up
+        if (direction.x === 0 && direction.y === -1 && !this.obstacleChecker(nextMoveCoord, map)) { //Tries to go up
             if (this.obstacleChecker(potentialNextCoordRight, map)) {
                 return potentialNextCoordRight;
-            }
-            else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
                 return potentialNextCoordLeft;
-            }
-            else if (this.obstacleChecker(potentialNextCoordDown, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordDown, map)) {
                 return potentialNextCoordDown;
             }
-        }
-
-        else if (direction.x == 0 && direction.y == 1 && this.obstacleChecker(nextMoveCoord, map) == false) { //Tries to go down
+        } else if (direction.x === 0 && direction.y === 1 && !this.obstacleChecker(nextMoveCoord, map)) { //Tries to go down
             if (this.obstacleChecker(potentialNextCoordRight, map)) {
                 return potentialNextCoordRight;
-            }
-            else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
                 return potentialNextCoordLeft;
-            }
-            else if (this.obstacleChecker(potentialNextCoordUp, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordUp, map)) {
                 return potentialNextCoordUp;
             }
-        }
-
-        else if (direction.x == -1 && direction.y == 0 && this.obstacleChecker(nextMoveCoord, map) == false) { // Tries to left
+        } else if (direction.x === -1 && direction.y === 0 && !this.obstacleChecker(nextMoveCoord, map)) { // Tries to left
             if (this.obstacleChecker(potentialNextCoordUp, map)) {
                 return potentialNextCoordUp;
-            }
-            else if (this.obstacleChecker(potentialNextCoordDown, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordDown, map)) {
                 return potentialNextCoordDown;
-            }
-            else if (this.obstacleChecker(potentialNextCoordRight, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordRight, map)) {
                 return potentialNextCoordRight;
             }
-
-        }
-
-        else if (direction.x == 1 && direction.y == 0 && this.obstacleChecker(nextMoveCoord, map) == false) { //Tries to go right
+        } else if (direction.x === 1 && direction.y === 0 && !this.obstacleChecker(nextMoveCoord, map)) { //Tries to go right
             if (this.obstacleChecker(potentialNextCoordUp, map)) {
                 return potentialNextCoordUp;
-            }
-            else if (this.obstacleChecker(potentialNextCoordDown, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordDown, map)) {
                 return potentialNextCoordDown;
-            }
-            else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
+            } else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
                 return potentialNextCoordLeft;
             }
         }
-        return nextMoveCoord; 
+        return nextMoveCoord;
     }
 
     private fastestWayLeftRight(start: Point, end: Point): Point {
@@ -204,10 +189,11 @@ export class Bot {
         }
         return (end - start) / Math.abs(end - start);
     }
+
     private upgrade() {
         const upgradeList = [{ type: UpgradeType.CarryingCapacity, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 2, cost: 15000 },{ type: UpgradeType.CollectingSpeed, level: 1, cost: 10000 },{ type: UpgradeType.CollectingSpeed, level: 2, cost: 15000 },{ type: UpgradeType.Defence, level: 1, cost: 10000 }, { type: UpgradeType.AttackPower, level: 1, cost: 10000 }, { type: UpgradeType.MaximumHealth, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 3, cost: 20000 }, { type: UpgradeType.CollectingSpeed, level: 3, cost: 20000 }];
         if (((this.playerInfo.Position.x === this.playerInfo.HouseLocation.x) && (this.playerInfo.Position.y === this.playerInfo.HouseLocation.y))) {
-            for (let i = 0; i < upgradeList.length; i++) {              
+            for (let i = 0; i < upgradeList.length; i++) {
                 if (this.playerInfo.TotalResources > upgradeList[i].cost) {
                     if (this.playerInfo.getUpgradeLevel(upgradeList[i].type) !== upgradeList[i].level) {
                         return AIHelper.createUpgradeAction(upgradeList[i].type);
@@ -215,6 +201,11 @@ export class Bot {
                 }
             }
         }
+    }
+
+    private buildMoveAction(move: Point, map: Map): string {
+        const bestMove = this.safetyChecker(this.playerInfo.Position, move, map);
+        return AIHelper.createMoveAction(bestMove);
     }
 
     /**
