@@ -2,6 +2,7 @@ import { AIHelper } from '../helper/aiHelper';
 import { Player, TileContent } from '../helper/interfaces';
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
+import { randomIntFromInterval } from './randomizer';
 
 export class Bot {
     protected playerInfo: Player;
@@ -27,7 +28,7 @@ export class Bot {
         }
 
         // Determine what action you want to take.
-        return AIHelper.createMoveAction(new Point(0, -1));
+        return AIHelper.createMoveAction(randomIntFromInterval());
     }
 
     private nextToResource(map: Map): Point | undefined {
