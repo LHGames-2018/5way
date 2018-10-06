@@ -26,10 +26,10 @@ export class Bot {
             return AIHelper.createMoveAction(new Point(1, 0));
         }*/
 
-        /*const upgradePlayer = this.upgrade();
+        const upgradePlayer = this.upgrade();
         if (upgradePlayer) {
             return upgradePlayer;
-        }*/
+        }
 
         if (this.isFullCapacity()) {
             return this.returnHome(map);
@@ -199,11 +199,14 @@ export class Bot {
     }
 
     private upgrade() {
-        const upgradeList = [{ type: UpgradeType.CarryingCapacity, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 2, cost: 15000 },{ type: UpgradeType.CollectingSpeed, level: 1, cost: 10000 },{ type: UpgradeType.CollectingSpeed, level: 2, cost: 15000 },{ type: UpgradeType.Defence, level: 1, cost: 10000 }, { type: UpgradeType.AttackPower, level: 1, cost: 10000 }, { type: UpgradeType.MaximumHealth, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 3, cost: 20000 }, { type: UpgradeType.CollectingSpeed, level: 3, cost: 20000 }];
+        const upgradeList = [{ type: UpgradeType.AttackPower, level: 1, cost: 10000 },{ type: UpgradeType.AttackPower, level: 2, cost: 15000 },{ type: UpgradeType.AttackPower, level: 3, cost: 25000 },{ type: UpgradeType.Defence, level: 1, cost: 10000 },{ type: UpgradeType.Defence, level: 2, cost: 15000 },{ type: UpgradeType.Defence, level: 3, cost: 25000 }, { type: UpgradeType.CarryingCapacity, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 2, cost: 15000 },{ type: UpgradeType.CollectingSpeed, level: 1, cost: 10000 },{ type: UpgradeType.CollectingSpeed, level: 2, cost: 15000 },{ type: UpgradeType.Defence, level: 1, cost: 10000 }, { type: UpgradeType.AttackPower, level: 1, cost: 10000 }, { type: UpgradeType.MaximumHealth, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 3, cost: 25000 }, { type: UpgradeType.CollectingSpeed, level: 3, cost: 25000 }];
         if (((this.playerInfo.Position.x === this.playerInfo.HouseLocation.x) && (this.playerInfo.Position.y === this.playerInfo.HouseLocation.y))) {
             for (let i = 0; i < upgradeList.length; i++) {
                 if (this.playerInfo.TotalResources > upgradeList[i].cost) {
-                    if (this.playerInfo.getUpgradeLevel(upgradeList[i].type) !== upgradeList[i].level) {
+                    console.log("total ressources: " + this.playerInfo.TotalResources + "upgrade log: " + upgradeList[i]);
+                    console.log("carrying capacity: "+ this.playerInfo.CarryingCapacity);
+                    console.log("collecting speed: "+ this.playerInfo.CollectingSpeed);          
+                    if (this.playerInfo.getUpgradeLevel(upgradeList[i].type) < upgradeList[i].level) {
                         return AIHelper.createUpgradeAction(upgradeList[i].type);
                     }
                 }
