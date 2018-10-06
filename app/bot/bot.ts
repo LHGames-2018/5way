@@ -26,6 +26,8 @@ export class Bot {
             return AIHelper.createMoveAction(new Point(1, 0));
         }*/
 
+        return AIHelper.createMoveAction(randomIntFromInterval());
+
         if (this.isFullCapacity()) {
             return this.returnHome(map);
         }
