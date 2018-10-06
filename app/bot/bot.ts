@@ -1,5 +1,5 @@
 import { AIHelper } from '../helper/aiHelper';
-import {Player, TileContent} from "../helper/interfaces";
+import { Player, TileContent } from '../helper/interfaces';
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
 
