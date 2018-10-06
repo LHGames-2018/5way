@@ -27,6 +27,7 @@ export class Bot {
         }
 
         const resource = this.nextToResource(this.playerInfo.Position, map);
+        console.log(this.playerInfo.CarryingCapacity);
         if (resource) {
             return AIHelper.createCollectAction(resource);
         }
@@ -67,11 +68,12 @@ export class Bot {
             new Point(0, +1),
         ];
 
-        attempts.forEach((attempt) => {
+        for (let i = 0; i < attempts.length; i++) {
+            const attempt = attempts[i];
             if (map.getTileAt(new Point(position.x + attempt.x, position.y + attempt.y)) === TileContent.Resource) {
                 return attempt;
             }
-        });
+        }
         return;
     }
 
