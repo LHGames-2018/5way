@@ -33,6 +33,12 @@ export class Bot {
         if (this.isFullCapacity()) {
             return this.returnHome(map);
         }
+
+        const fight = this.fight(this.playerInfo.Position, map);
+        if (fight) {
+            return AIHelper.createAttackAction(fight);
+        }
+
         const resource = this.nextToResource(this.playerInfo.Position, map);
         if (resource) {
             return AIHelper.createCollectAction(resource);
@@ -150,6 +156,24 @@ export class Bot {
                 }
             }
         }
+    }
+
+
+    private fight(position: Point, map: Map): Point | undefined {
+        const attempts = [
+            new Point(-1, 0),
+            new Point(1, 0),
+            new Point(0, -1),
+            new Point(0, +1),
+        ];
+
+        for (let i = 0; i < attempts.length; i++) {
+            const attempt = attempts[i];
+            if (map.getTileAt(new Point(position.x + attempt.x, position.y + attempt.y)) === TileContent.Player) {
+                return attempt;
+            }
+        }
+        return;
     }
 
     /**
