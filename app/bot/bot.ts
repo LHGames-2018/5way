@@ -42,7 +42,6 @@ export class Bot {
         const executeNearestResource = this.thinkNearestResource(map);
 
         if (executeNearestResource) {
-            console.log(executeNearestResource);
             return executeNearestResource;
         }
     
@@ -113,22 +112,12 @@ export class Bot {
     private upgrade() {
         const upgradeList = [{ type: UpgradeType.Defence, level: 1, cost: 10000 }, { type: UpgradeType.AttackPower, level: 1, cost: 10000 }, { type: UpgradeType.MaximumHealth, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 2, cost: 15000 }, { type: UpgradeType.CollectingSpeed, level: 1, cost: 10000 }, { type: UpgradeType.Defence, level: 2, cost: 15000 }, { type: UpgradeType.AttackPower, level: 2, cost: 15000 }];
         if (((this.playerInfo.Position.x === this.playerInfo.HouseLocation.x) && (this.playerInfo.Position.y === this.playerInfo.HouseLocation.y))) {
-            console.log("after house comparison");
-            for (let i = 0; i < upgradeList.length; i++) {
-                console.log(this.playerInfo.TotalResources);
-                console.log(this.playerInfo.Defence);
-                console.log(this.playerInfo.AttackPower);
-                console.log(this.playerInfo.MaxHealth);
+            for (let i = 0; i < upgradeList.length; i++) {              
                 if (this.playerInfo.TotalResources > upgradeList[i].cost) {
-                  console.log("passed price check")
                     if (this.playerInfo.getUpgradeLevel(upgradeList[i].type) !== upgradeList[i].level) {
-                        //do upgrade here
-                        console.log(this.playerInfo.getUpgradeLevel(upgradeList[i].type) + "!==" + upgradeList[i].level);
-                        console.log(upgradeList[i].type + "performed");
                         return AIHelper.createUpgradeAction(upgradeList[i].type);
                     }
                 }
-
             }
         }
     }
