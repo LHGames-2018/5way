@@ -23,16 +23,16 @@ export function distance(point1: Point, point2: Point) {
     return distanceX + distanceY;
  }
 
-export function ResearchClosestResource(map: Map, point: Point){
-   let closestResourceItemLocation; 
-   let smallestDistance = 99999999999999999999999;
+export function researchClosestResource(map: Map, point: Point){
+    let closestResourceItemLocation;
+    let smallestDistance = 99999999999999999999999;
     for (let x = map.xMin; x < map.xMax; x++) {
         for (let y = map.yMin; y < map.yMax; y++) {
             if (map.getTileAt(new Point(x, y)) === TileContent.Resource) {
-                let itemLocation = map.getTileAt(new Point(x,y));
-                if(distance(point,new Point(x,y)) < smallestDistance){
+                if (distance(point, new Point(x,y)) < smallestDistance) {
                     smallestDistance = distance(point, new Point(x,y));
-                    closestResourceItemLocation = new Point(x,y);                    
+                    closestResourceItemLocation = new Point(x,y);
+                    console.log('closer', closestResourceItemLocation, smallestDistance);
                 }
             }
         }

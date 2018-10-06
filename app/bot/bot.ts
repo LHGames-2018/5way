@@ -2,7 +2,7 @@ import { AIHelper } from '../helper/aiHelper';
 import { Player, TileContent } from '../helper/interfaces';
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
-import { randomIntFromInterval, ResearchClosestResource } from './randomizer';
+import { randomIntFromInterval, researchClosestResource } from './randomizer';
 
 export class Bot {
     protected playerInfo: Player;
@@ -26,9 +26,33 @@ export class Bot {
         if (resource) {
             return AIHelper.createCollectAction(resource);
         }
-        ResearchClosestResource(map, this.playerInfo.Position);
+
+        const executeNearestResource = this.thinkNearestResource(map);
+        if (executeNearestResource) {
+            return executeNearestResource;
+        }
+
         // Determine what action you want to take.
         return AIHelper.createMoveAction(randomIntFromInterval());
+    }
+
+    private thinkNearestResource(map: Map): string | undefined {
+        const closestResource = researchClosestResource(map, this.playerInfo.Position);
+        let move: Point;
+        if (closestResource.x !== this.playerInfo.Position.x) {
+            move = new Point((closestResource.x < this.playerInfo.Position.x) ? -1 : 1, 0);
+        } else if (closestResource.y !== this.playerInfo.Position.y) {
+            move = new Point(0, (closestResource.y < this.playerInfo.Position.y) ? -1 : 1);
+        }
+        if (map.getTileAt(this.addVectors(this.playerInfo.Position, move)) === TileContent.Wall) {
+            return AIHelper.createAttackAction(move);
+        }
+
+        return AIHelper.createMoveAction(move);
+    }
+
+    private addVectors(point1: Point, point2: Point): Point {
+        return new Point(point1.x + point2.x, point1.y + point2.y);
     }
 
     private nextToResource(position: Point, map: Map): Point | undefined {
