@@ -26,10 +26,10 @@ export class Bot {
             return AIHelper.createMoveAction(new Point(1, 0));
         }*/
 
-        const upgradePlayer = this.upgrade();
+        /*const upgradePlayer = this.upgrade();
         if (upgradePlayer) {
             return upgradePlayer;
-        }
+        }*/
 
         if (this.isFullCapacity()) {
             return this.returnHome(map);
