@@ -144,7 +144,7 @@ export class Bot {
         return (end - start) / Math.abs(end - start);
     }
     private upgrade() {
-        const upgradeList = [{ type: UpgradeType.Defence, level: 1, cost: 10000 }, { type: UpgradeType.AttackPower, level: 1, cost: 10000 }, { type: UpgradeType.MaximumHealth, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 2, cost: 15000 }, { type: UpgradeType.CollectingSpeed, level: 1, cost: 10000 }, { type: UpgradeType.Defence, level: 2, cost: 15000 }, { type: UpgradeType.AttackPower, level: 2, cost: 15000 }];
+        const upgradeList = [{ type: UpgradeType.CarryingCapacity, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 2, cost: 15000 },{ type: UpgradeType.CollectingSpeed, level: 1, cost: 10000 },{ type: UpgradeType.CollectingSpeed, level: 2, cost: 15000 },{ type: UpgradeType.Defence, level: 1, cost: 10000 }, { type: UpgradeType.AttackPower, level: 1, cost: 10000 }, { type: UpgradeType.MaximumHealth, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 3, cost: 20000 }, { type: UpgradeType.CollectingSpeed, level: 3, cost: 20000 }];
         if (((this.playerInfo.Position.x === this.playerInfo.HouseLocation.x) && (this.playerInfo.Position.y === this.playerInfo.HouseLocation.y))) {
             for (let i = 0; i < upgradeList.length; i++) {              
                 if (this.playerInfo.TotalResources > upgradeList[i].cost) {
