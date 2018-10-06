@@ -133,7 +133,9 @@ export class Bot {
         const potentialNextCoordDown: Point = new Point (currentCoord.x, currentCoord.y + 1);
         const potentialNextCoordUp: Point = new Point (currentCoord.x, currentCoord.y - 1);
 
-        if (direction.x === 0 && direction.y === -1 && !this.obstacleChecker(nextMoveCoord, map)) { //Tries to go up
+        if (nextMoveCoord.x === this.playerInfo.HouseLocation.x && nextMoveCoord.y === this.playerInfo.HouseLocation.y) {
+            return nextMoveCoord;
+        } else if (direction.x === 0 && direction.y === -1 && !this.obstacleChecker(nextMoveCoord, map)) { //Tries to go up
             if (this.obstacleChecker(potentialNextCoordRight, map)) {
                 return potentialNextCoordRight;
             } else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
@@ -204,7 +206,8 @@ export class Bot {
     }
 
     private buildMoveAction(move: Point, map: Map): string {
-        const bestMove = this.safetyChecker(this.playerInfo.Position, move, map);
+        const whereToGo = this.safetyChecker(this.playerInfo.Position, move, map);
+        const bestMove = new Point(whereToGo.x - this.playerInfo.Position.x, whereToGo.y - this.playerInfo.Position.y);
         return AIHelper.createMoveAction(bestMove);
     }
 
