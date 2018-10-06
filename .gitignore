@@ -1,0 +1,23 @@
+# Exclusion des dépendences du projet. Elles peuvent être regénérées 
+# automatiquement.
+node_modules/
+false/
+
+# Exclusion des fichiers Javascripts
+out/
+
+# NPM Debug Log
+npm-debug.log
+
+# Code Coverage Folder
+coverage/
+
+##Typescrit compilation ##
+
+*.js.map
+*.js
+
+
+# Garder les fichiers necessaires pour les tests
+!tslint.json
+!tsconfig.json
