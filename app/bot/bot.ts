@@ -1,5 +1,5 @@
 import { AIHelper } from '../helper/aiHelper';
-import { Player } from '../helper/interfaces';
+import {Player, TileContent} from "../helper/interfaces";
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
 
@@ -21,8 +21,24 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: Map, visiblePlayers: Player[]): string {
+        const resource = this.nextToResource(map);
+        if (resource) {
+            return AIHelper.createCollectAction(resource);
+        }
+
         // Determine what action you want to take.
-        return AIHelper.createMoveAction(new Point(0, 1));
+        return AIHelper.createMoveAction(new Point(0, -1));
+    }
+
+    private nextToResource(map: Map): Point | undefined {
+        const attempts = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
+
+        attempts.forEach((attempt) => {
+            if (map.getTileAt(attempt) === TileContent.Resource) {
+                return attempt;
+            }
+        });
+        return;
     }
 
     /**
