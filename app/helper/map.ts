@@ -6,14 +6,27 @@ import { Point } from './point';
 export class Map {
 
     private tiles: Tile[][];
-    private xMin: number;
-    private yMin: number;
-    private xMax: number;
-    private yMax: number;
+    private _xMin: number;
+    private _yMin: number;
+    private _xMax: number;
+    private _yMax: number;
     private _wallsAreBreakable: boolean;
 
     // tslint:disable-next-line:variable-name
     private _visibleDistance: number;
+
+    public get xMin(): number {
+        return this._xMin;
+    }
+    public get yMin(): number {
+        return this._yMin;
+    }
+    public get xMax(): number {
+        return this._xMax;
+    }
+    public get yMax(): number {
+        return this._yMax;
+    }
 
     /**
      * How far your Bot can see.
@@ -32,8 +45,8 @@ export class Map {
     }
 
     public constructor(customSerializedMap: string, xMin: number, yMin: number, wallsAreBreakable: boolean) {
-        this.xMin = xMin;
-        this.yMin = yMin;
+        this._xMin = xMin;
+        this._yMin = yMin;
         this._wallsAreBreakable = wallsAreBreakable;
         this.deserializeMap(customSerializedMap);
         this.initMapSize();
@@ -49,11 +62,11 @@ export class Map {
      * @returns TileContent The content of the tile.
      */
     public getTileAt(position: Point): TileContent {
-        if (position.x < this.xMin || position.x >= this.xMax || position.y < this.yMin || position.y >= this.yMax) {
+        if (position.x < this._xMin || position.x >= this._xMax || position.y < this._yMin || position.y >= this._yMax) {
             return TileContent.Empty;
         }
-        const x = position.x - this.xMin;
-        const y = position.y - this.yMin;
+        const x = position.x - this._xMin;
+        const y = position.y - this._yMin;
         return this.tiles[x][y].TileType;
     }
 
@@ -86,7 +99,7 @@ export class Map {
                     }
                 }
                 if (tileType !== TileContent.Resource) {
-                    this.tiles[i][j] = new Tile(tileType, i + this.xMin, j + this.yMin);
+                    this.tiles[i][j] = new Tile(tileType, i + this._xMin, j + this._yMin);
                 }
             }
         }
@@ -98,9 +111,9 @@ export class Map {
      */
     private initMapSize(): void {
         if (this.tiles !== undefined) {
-            this.xMax = this.xMin + this.tiles.length;
-            this.yMax = this.yMin + this.tiles[0].length;
-            this._visibleDistance = (this.xMax - this.xMin - 1) / 2;
+            this._xMax = this._xMin + this.tiles.length;
+            this._yMax = this._yMin + this.tiles[0].length;
+            this._visibleDistance = (this._xMax - this._xMin - 1) / 2;
         }
     }
 }
