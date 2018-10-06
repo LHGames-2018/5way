@@ -57,14 +57,14 @@ export class Bot {
 
     private nextToResource(position: Point, map: Map): Point | undefined {
         const attempts = [
-            new Point(position.x - 1, 0),
-            new Point(position.x + 1, 0),
-            new Point(0, position.y - 1),
-            new Point(0, position.y + 1),
+            new Point(-1, 0),
+            new Point(1, 0),
+            new Point(0, -1),
+            new Point(0, +1),
         ];
 
         attempts.forEach((attempt) => {
-            if (map.getTileAt(attempt) === TileContent.Resource) {
+            if (map.getTileAt(new Point(position.x + attempt.x, position.y + attempt.y)) === TileContent.Resource) {
                 return attempt;
             }
         });
