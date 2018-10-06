@@ -120,7 +120,7 @@ export class Bot {
 
     private obstacleChecker(nextMoveCoord: Point, map: Map): boolean { //Returns true if there is no obstacle at next move
         const nextMoveContent: TileContent = map.getTileAt(nextMoveCoord);
-        if (nextMoveContent == TileContent.Resource || nextMoveContent == TileContent.House || nextMoveContent == TileContent.Shop) {
+        if (nextMoveContent == TileContent.Resource || nextMoveContent == TileContent.House || nextMoveContent == TileContent.Shop || nextMoveContent == TileContent.Lava) {
             return false;
         }
         return true;
