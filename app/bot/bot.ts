@@ -1,5 +1,5 @@
 import { AIHelper } from '../helper/aiHelper';
-import {Player, TileContent, UpgradeType} from "../helper/interfaces";
+import { Player, TileContent, UpgradeType } from '../helper/interfaces';
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
 import { randomIntFromInterval, researchClosestResource } from './randomizer';
@@ -25,22 +25,26 @@ export class Bot {
         /*if (this.playerInfo.HouseLocation.x !== this.playerInfo.Position.x) {
             return AIHelper.createMoveAction(new Point(1, 0));
         }*/
-
+        const upgradePlayer = this.upgrade();
+        if (upgradePlayer) {
+            return upgradePlayer;
+        }
         if (this.isFullCapacity()) {
             return this.returnHome(map);
         }
-
         const resource = this.nextToResource(this.playerInfo.Position, map);
         console.log(this.playerInfo.CarryingCapacity);
         if (resource) {
             return AIHelper.createCollectAction(resource);
         }
-
+        console.log("viarge4")
         const executeNearestResource = this.thinkNearestResource(map);
         if (executeNearestResource) {
+            console.log(executeNearestResource);
             return executeNearestResource;
         }
 
+        console.log("viarge5")
         // Determine what action you want to take.
         return AIHelper.createMoveAction(randomIntFromInterval());
     }
@@ -111,6 +115,7 @@ export class Bot {
         return AIHelper.createMoveAction(move);
     }
 
+
     private fastestWayLeftRight(start: Point, end: Point): Point {
         return new Point(this.fastestWayAgnostic(start.x, end.x, Map.MAX_X), 0);
     }
@@ -130,6 +135,28 @@ export class Bot {
             return (start - end) / Math.abs(start - end);
         }
         return (end - start) / Math.abs(end - start);
+    }
+    private upgrade() {
+        const upgradeList = [{ type: UpgradeType.Defence, level: 1, cost: 10000 }, { type: UpgradeType.AttackPower, level: 1, cost: 10000 }, { type: UpgradeType.MaximumHealth, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 1, cost: 10000 }, { type: UpgradeType.CarryingCapacity, level: 2, cost: 15000 }, { type: UpgradeType.CollectingSpeed, level: 1, cost: 10000 }, { type: UpgradeType.Defence, level: 2, cost: 15000 }, { type: UpgradeType.AttackPower, level: 2, cost: 15000 }];
+        if (((this.playerInfo.Position.x === this.playerInfo.HouseLocation.x) && (this.playerInfo.Position.y === this.playerInfo.HouseLocation.y))) {
+            console.log("after house comparison");
+            for (let i = 0; i < upgradeList.length; i++) {
+                console.log(this.playerInfo.TotalResources);
+                console.log(this.playerInfo.Defence);
+                console.log(this.playerInfo.AttackPower);
+                console.log(this.playerInfo.MaxHealth);
+                if (this.playerInfo.TotalResources > upgradeList[i].cost) {
+                  console.log("passed price check")
+                    if (this.playerInfo.getUpgradeLevel(upgradeList[i].type) !== upgradeList[i].level) {
+                        //do upgrade here
+                        console.log(this.playerInfo.getUpgradeLevel(upgradeList[i].type) + "!==" + upgradeList[i].level);
+                        console.log(upgradeList[i].type + "performed");
+                        return AIHelper.createUpgradeAction(upgradeList[i].type);
+                    }
+                }
+
+            }
+        }
     }
 
     /**
