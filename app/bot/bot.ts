@@ -126,11 +126,12 @@ export class Bot {
         return true;
     }
 
-    private safetyChecker(nextMoveCoord: Point, direction: Point, map: Map): Point {
-        const potentialNextCoordRight: Point = new Point(nextMoveCoord.x + 1, nextMoveCoord.y);
-        const potentialNextCoordLeft: Point = new Point(nextMoveCoord.x - 1, nextMoveCoord.y);
-        const potentialNextCoordDown: Point = new Point (nextMoveCoord.x, nextMoveCoord.y + 1);
-        const potentialNextCoordUp: Point = new Point (nextMoveCoord.x, nextMoveCoord.y - 1);
+    private safetyChecker(currentCoord: Point, direction: Point, map: Map): Point {
+        const nextMoveCoord = this.addVectors(currentCoord, direction);
+        const potentialNextCoordRight: Point = new Point(currentCoord.x + 1, currentCoord.y);
+        const potentialNextCoordLeft: Point = new Point(currentCoord.x - 1, currentCoord.y);
+        const potentialNextCoordDown: Point = new Point (currentCoord.x, currentCoord.y + 1);
+        const potentialNextCoordUp: Point = new Point (currentCoord.x, currentCoord.y - 1);
 
         if (direction.x == 0 && direction.y == -1 && this.obstacleChecker(nextMoveCoord, map) == false) { //Tries to go up
             if (this.obstacleChecker(potentialNextCoordRight, map)) {
