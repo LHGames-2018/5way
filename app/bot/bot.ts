@@ -1,5 +1,5 @@
 import { AIHelper } from '../helper/aiHelper';
-import {Player, TileContent, UpgradeType} from "../helper/interfaces";
+import { Player, TileContent } from '../helper/interfaces';
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
 import { randomIntFromInterval, researchClosestResource } from './randomizer';
@@ -31,7 +31,6 @@ export class Bot {
         }
 
         const resource = this.nextToResource(this.playerInfo.Position, map);
-        console.log(this.playerInfo.CarryingCapacity);
         if (resource) {
             return AIHelper.createCollectAction(resource);
         }
@@ -47,27 +46,34 @@ export class Bot {
 
     private thinkNearestResource(map: Map): string | undefined {
         const closestResource = researchClosestResource(map, this.playerInfo.Position);
-        let xMove = new Point(0, 0);
-        let yMove = new Point(0, 0);
-        if (closestResource.x !== this.playerInfo.Position.x) {
-            xMove = new Point((closestResource.x < this.playerInfo.Position.x) ? -1 : 1, 0);
-        } else if (closestResource.y !== this.playerInfo.Position.y) {
-            yMove = new Point(0, (closestResource.y < this.playerInfo.Position.y) ? -1 : 1);
-        }
-
-        let move: Point;
-        const takeX = Math.round(Math.random());
-        if (takeX === 0) {
-            move = xMove;
-        } else {
-            move = yMove;
-        }
+        const move = this.selectBestDirection(this.playerInfo.Position, closestResource);
 
         if (map.getTileAt(this.addVectors(this.playerInfo.Position, move)) === TileContent.Wall) {
             return AIHelper.createAttackAction(move);
         }
 
         return AIHelper.createMoveAction(move);
+    }
+
+    private selectBestDirection(start: Point, end: Point): Point {
+        let xMove = new Point(0, 0);
+        let yMove = new Point(0, 0);
+        if (end.x !== start.x) {
+            xMove = this.fastestWayLeftRight(start, end);
+        }
+        if (end.y !== start.y) {
+            yMove = this.fastestWayTopBottom(start, end);
+        }
+
+        let move: Point;
+        const takeX = Math.round(Math.random());
+        if ((takeX === 0 && xMove.x) || yMove.y === 0) {
+            move = xMove;
+        } else {
+            move = yMove;
+        }
+
+        return move;
     }
 
     private addVectors(point1: Point, point2: Point): Point {
@@ -96,13 +102,7 @@ export class Bot {
     }
 
     private returnHome(map: Map): string {
-        let move: Point;
-
-        if (this.playerInfo.HouseLocation.x !== this.playerInfo.Position.x) {
-            move = this.fastestWayLeftRight(this.playerInfo.Position, this.playerInfo.HouseLocation);
-        } else if (this.playerInfo.HouseLocation.y !== this.playerInfo.Position.y) {
-            move = this.fastestWayTopBottom(this.playerInfo.Position, this.playerInfo.HouseLocation);
-        }
+        const move = this.selectBestDirection(this.playerInfo.Position, this.playerInfo.HouseLocation);
 
         if (map.getTileAt(this.addVectors(this.playerInfo.Position, move)) === TileContent.Wall) {
             return AIHelper.createAttackAction(move);
