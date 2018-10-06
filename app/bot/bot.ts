@@ -2,7 +2,7 @@ import { AIHelper } from '../helper/aiHelper';
 import { Player, TileContent } from '../helper/interfaces';
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
-import { randomIntFromInterval } from './randomizer';
+import { randomIntFromInterval, ResearchClosestResource } from './randomizer';
 
 export class Bot {
     protected playerInfo: Player;
@@ -26,7 +26,7 @@ export class Bot {
         if (resource) {
             return AIHelper.createCollectAction(resource);
         }
-
+        ResearchClosestResource(map, this.playerInfo.Position);
         // Determine what action you want to take.
         return AIHelper.createMoveAction(randomIntFromInterval());
     }
