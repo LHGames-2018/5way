@@ -5,6 +5,8 @@ import { Point } from './point';
 
 export class Map {
 
+    public static readonly MAX_X = 132;
+    public static readonly MAX_Y = 198;
     private tiles: Tile[][];
     private _xMin: number;
     private _yMin: number;

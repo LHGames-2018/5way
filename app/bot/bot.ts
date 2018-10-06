@@ -1,5 +1,5 @@
 import { AIHelper } from '../helper/aiHelper';
-import { Player, TileContent } from '../helper/interfaces';
+import {Player, TileContent, UpgradeType} from "../helper/interfaces";
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
 import { randomIntFromInterval, researchClosestResource } from './randomizer';
@@ -89,9 +89,9 @@ export class Bot {
         let move: Point;
 
         if (this.playerInfo.HouseLocation.x !== this.playerInfo.Position.x) {
-            move = new Point((this.playerInfo.HouseLocation.x < this.playerInfo.Position.x) ? -1 : 1, 0);
+            move = this.fastestWayLeftRight(this.playerInfo.Position, this.playerInfo.HouseLocation);
         } else if (this.playerInfo.HouseLocation.y !== this.playerInfo.Position.y) {
-            move = new Point(0, (this.playerInfo.HouseLocation.y < this.playerInfo.Position.y) ? -1 : 1);
+            move = this.fastestWayTopBottom(this.playerInfo.Position, this.playerInfo.HouseLocation);
         }
 
         if (map.getTileAt(this.addVectors(this.playerInfo.Position, move)) === TileContent.Wall) {
@@ -99,6 +99,27 @@ export class Bot {
         }
 
         return AIHelper.createMoveAction(move);
+    }
+
+    private fastestWayLeftRight(start: Point, end: Point): Point {
+        return new Point(this.fastestWayAgnostic(start.x, end.x, Map.MAX_X), 0);
+    }
+
+    private fastestWayTopBottom(start: Point, end: Point): Point {
+        return new Point(0, this.fastestWayAgnostic(start.y, end.y, Map.MAX_Y));
+    }
+
+    private fastestWayAgnostic(start: number, end: number, max: number): number {
+        //Looparound distance is (sizeOfMap - start + end)
+        const looparoundDistance = max - Math.max(start, end) + Math.min(start, end);
+
+        //Normal distance is (end - end)
+        const normalDistance = Math.abs(end - start);
+
+        if (looparoundDistance < normalDistance) {
+            return (start - end) / Math.abs(start - end);
+        }
+        return (end - start) / Math.abs(end - start);
     }
 
     /**
