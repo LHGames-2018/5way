@@ -25,6 +25,7 @@ export class Bot {
         /*if (this.playerInfo.HouseLocation.x !== this.playerInfo.Position.x) {
             return AIHelper.createMoveAction(new Point(1, 0));
         }*/
+              
         const upgradePlayer = this.upgrade();
         if (upgradePlayer) {
             return upgradePlayer;
@@ -37,20 +38,24 @@ export class Bot {
         if (resource) {
             return AIHelper.createCollectAction(resource);
         }
-        console.log("viarge4")
+       
         const executeNearestResource = this.thinkNearestResource(map);
+
         if (executeNearestResource) {
             console.log(executeNearestResource);
             return executeNearestResource;
         }
-
-        console.log("viarge5")
+    
         // Determine what action you want to take.
         return AIHelper.createMoveAction(randomIntFromInterval());
     }
 
     private thinkNearestResource(map: Map): string | undefined {
         const closestResource = researchClosestResource(map, this.playerInfo.Position);
+        console.log('closest', closestResource);
+        if(!closestResource){
+            return;
+        }
         let move: Point;
         if (closestResource.x !== this.playerInfo.Position.x) {
             move = new Point((closestResource.x < this.playerInfo.Position.x) ? -1 : 1, 0);
