@@ -118,6 +118,70 @@ export class Bot {
         return AIHelper.createMoveAction(move);
     }
 
+    private obstacleChecker(nextMoveCoord: Point, map: Map): boolean { //Returns true if there is no obstacle at next move
+        const nextMoveContent: TileContent = map.getTileAt(nextMoveCoord);
+        if (nextMoveContent == TileContent.Resource || nextMoveContent == TileContent.House || nextMoveContent == TileContent.Shop) {
+            return false;
+        }
+        return true;
+    }
+
+    private safetyChecker(nextMoveCoord: Point, direction: Point, map: Map): Point {
+        const potentialNextCoordRight: Point = new Point(nextMoveCoord.x + 1, nextMoveCoord.y);
+        const potentialNextCoordLeft: Point = new Point(nextMoveCoord.x - 1, nextMoveCoord.y);
+        const potentialNextCoordDown: Point = new Point (nextMoveCoord.x, nextMoveCoord.y + 1);
+        const potentialNextCoordUp: Point = new Point (nextMoveCoord.x, nextMoveCoord.y - 1);
+
+        if (direction.x == 0 && direction.y == -1 && this.obstacleChecker(nextMoveCoord, map) == false) { //Tries to go up
+            if (this.obstacleChecker(potentialNextCoordRight, map)) {
+                return potentialNextCoordRight;
+            }
+            else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
+                return potentialNextCoordLeft;
+            }
+            else if (this.obstacleChecker(potentialNextCoordDown, map)) {
+                return potentialNextCoordDown;
+            }
+        }
+
+        else if (direction.x == 0 && direction.y == 1 && this.obstacleChecker(nextMoveCoord, map) == false) { //Tries to go down
+            if (this.obstacleChecker(potentialNextCoordRight, map)) {
+                return potentialNextCoordRight;
+            }
+            else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
+                return potentialNextCoordLeft;
+            }
+            else if (this.obstacleChecker(potentialNextCoordUp, map)) {
+                return potentialNextCoordUp;
+            }
+        }
+
+        else if (direction.x == -1 && direction.y == 0 && this.obstacleChecker(nextMoveCoord, map) == false) { // Tries to left
+            if (this.obstacleChecker(potentialNextCoordUp, map)) {
+                return potentialNextCoordUp;
+            }
+            else if (this.obstacleChecker(potentialNextCoordDown, map)) {
+                return potentialNextCoordDown;
+            }
+            else if (this.obstacleChecker(potentialNextCoordRight, map)) {
+                return potentialNextCoordRight;
+            }
+
+        }
+
+        else if (direction.x == 1 && direction.y == 0 && this.obstacleChecker(nextMoveCoord, map) == false) { //Tries to go right
+            if (this.obstacleChecker(potentialNextCoordUp, map)) {
+                return potentialNextCoordUp;
+            }
+            else if (this.obstacleChecker(potentialNextCoordDown, map)) {
+                return potentialNextCoordDown;
+            }
+            else if (this.obstacleChecker(potentialNextCoordLeft, map)) {
+                return potentialNextCoordLeft;
+            }
+        }
+        return nextMoveCoord; 
+    }
 
     private fastestWayLeftRight(start: Point, end: Point): Point {
         return new Point(this.fastestWayAgnostic(start.x, end.x, Map.MAX_X), 0);
