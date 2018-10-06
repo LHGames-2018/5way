@@ -21,3 +21,5 @@ coverage/
 # Garder les fichiers necessaires pour les tests
 !tslint.json
 !tsconfig.json
+
+.idea
