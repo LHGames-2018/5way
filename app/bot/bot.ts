@@ -111,7 +111,7 @@ export class Bot {
     }
 
     private isFullCapacity(): boolean { //Checking if the capacity is full
-        return this.playerInfo.CarriedResources > (this.playerInfo.CarryingCapacity * 0.9);
+        return this.playerInfo.CarriedResources >= this.playerInfo.CarryingCapacity;
     }
 
     private returnHome(map: Map): string {
